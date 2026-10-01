@@ -62,7 +62,7 @@ nav.top .wrap{max-width:1320px;display:flex;align-items:center;justify-content:s
 
 /* ---------- Hero + value block share one atmosphere ---------- */
 .atmo{position:relative;overflow:hidden;overflow:clip} /* clip: anchors like #about must not scroll this box internally */
-.hero{position:relative;z-index:1;padding-block:210px 150px}
+.hero{position:relative;z-index:1;padding-block:140px 150px}
 .kicker{display:inline-block;font-size:.8rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#5aa9d6;margin-bottom:16px}
 .hero-in{max-width:720px;margin-left:clamp(0px,4vw,60px)}
 .hero p.sub{font-size:1.05rem;margin:26px 0 30px;color:#333;max-width:590px}.hero h1{white-space:nowrap}@media(max-width:760px){.hero h1{white-space:normal}}
