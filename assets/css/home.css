@@ -1,0 +1,23 @@
+/* Home only: animated wave ribbon behind the hero, continuing under the frosted-glass value block */
+.atmo{--wv-pink:#ffb3c2;--wv-peach:#f8c9a3;--wv-lav:#cdb8ec;--wv-blue:#93d3ec;--wv-blue2:#75d0ed;--wv-bg:#fbfaf8}
+.wv-bg{position:absolute;inset:0;z-index:0;opacity:.97;pointer-events:none}
+.wv-gradient{position:absolute;inset:0;background-image:linear-gradient(120deg,var(--wv-bg) 0%,#fdfbfa 30%,var(--wv-bg) 55%,#fcfbfa 80%,var(--wv-bg) 100%);background-size:400% 400%;animation:wv-flow 20s ease-in-out infinite}
+@keyframes wv-flow{0%,100%{background-position:0% 0%}50%{background-position:100% 100%}}
+.wv-texture{position:absolute;inset:-25%;width:150%;height:150%;filter:blur(70px);mix-blend-mode:multiply;opacity:.14;background-image:radial-gradient(38% 30% at 22% 28%,var(--wv-blue2),transparent 70%),radial-gradient(34% 26% at 72% 20%,var(--wv-pink),transparent 70%),radial-gradient(40% 32% at 55% 62%,var(--wv-lav),transparent 70%),radial-gradient(30% 24% at 15% 75%,var(--wv-peach),transparent 70%),radial-gradient(36% 28% at 85% 70%,var(--wv-blue),transparent 70%);background-repeat:no-repeat;animation:wv-drift 24s ease-in-out infinite}
+@keyframes wv-drift{0%,100%{transform:translate(0,0) scale(1) rotate(0)}33%{transform:translate(-3%,2.5%) scale(1.04) rotate(2deg)}66%{transform:translate(2.5%,-2%) scale(1.02) rotate(-1.5deg)}}
+/* box the size of the prototype hero (92vh); the ribbon continues below it into the value block */
+.wv-frame{position:absolute;top:0;left:0;width:100%;height:92vh}
+.wv-ribbon{position:absolute;inset:6% -30% auto auto;width:148%;height:96%;transform:translate(-25%,35%) rotate(-24deg) scaleY(1.25);transform-origin:80% 20%}
+.wv-ribbon svg{display:block;width:100%;height:100%;overflow:visible}
+.wv-path{filter:blur(8px)}
+.wv-path.main{opacity:.95;stroke:rgba(255,255,255,.75);stroke-width:2}
+.wv-path.under{opacity:.8;filter:blur(13px)}
+.wv-path.front{opacity:.6;filter:blur(7px);transform-box:fill-box;transform-origin:50% 50%;transform:scale(.88) translateX(9%)}
+.wv-path.edge{opacity:.8;filter:blur(6px);mix-blend-mode:overlay}
+.wv-path.shadow{opacity:.35;filter:blur(28px);transform:translate(1.5%,2.5%)}
+.band{background:rgba(255,255,255,.5);-webkit-backdrop-filter:blur(34px);backdrop-filter:blur(34px);box-shadow:0 14px 22px -12px rgba(28,36,48,.38)}
+@media(max-width:768px){
+  .wv-bg{display:none}
+  .band{background:rgba(255,255,255,.6);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none}
+}
+@media(prefers-reduced-motion:reduce){.wv-gradient,.wv-texture{animation:none!important}}
