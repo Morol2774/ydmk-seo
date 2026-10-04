@@ -290,7 +290,7 @@ legend{font-size:.74rem;font-weight:600;letter-spacing:.12em;text-transform:uppe
 .legal-nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
 
 /* ---------- Footer ---------- */
-footer{background:var(--surface);border-top:1px solid #efeaf0;padding-block:60px 0}
+footer{background:var(--bg);border-top:1px solid #efeaf0;padding-block:60px 0}
 .fgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:56px}
 .flogo{display:flex;align-items:center;gap:12px;text-decoration:none}
 .flogo img{height:auto;width:100%;max-width:250px}
