@@ -247,6 +247,10 @@ legend{font-size:.74rem;font-weight:600;letter-spacing:.12em;text-transform:uppe
 .pbtns .btn,.pbtns .btn2{padding:11px 10px;font-size:.86rem;width:100%;min-width:0}
 .pcta{text-align:center;padding-block:10px 90px}
 .pcta p{color:var(--muted);margin:10px auto 24px;max-width:520px}
+.pfgrid .proj .thumb{position:relative;overflow:hidden;aspect-ratio:16/10;height:auto}
+.pfgrid .proj .thumb>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;transition:transform .5s ease}
+.pfgrid .proj .thumb .cat{position:absolute;z-index:2}
+.pfgrid .proj:hover .thumb>img{transform:scale(1.04)}
 
 /* ---------- Case page ---------- */
 .case-hero{aspect-ratio:21/9;max-width:100%;border-radius:28px;display:grid;place-items:center;color:#fff;margin-top:34px}
