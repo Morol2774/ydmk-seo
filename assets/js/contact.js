@@ -17,10 +17,10 @@
     var c=document.getElementById('f-consent');
     document.getElementById('consentRow').classList.toggle('err',!c.checked);
     if(!c.checked&&!bad)bad=c;
-    if(bad){bad.focus();bad.scrollIntoView({behavior:'smooth',block:'center'});window.ydmkToast('Please complete the highlighted fields.');return;}
+    if(bad){(bad._gs||bad).focus();(bad.closest('.f')||bad).scrollIntoView({behavior:'smooth',block:'center'});window.ydmkToast('Please complete the highlighted fields.');return;}
     var fd=new FormData(form), sel=document.getElementById('f-pkg'), svcs=fd.getAll('svc');
     var dt=date.value.split('-'), dstr=new Date(+dt[0],+dt[1]-1,+dt[2]).toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'});
-    var rows=[['Business',fd.get('business')],['Package',sel.options[sel.selectedIndex].text.split(' · ')[0]],['Services',svcs.length?svcs.join(', '):'—'],['Call',dstr+', '+fd.get('time').split(' (')[0]],['Language',fd.get('lang')],['Contact via',fd.get('via')]];
+    var rows=[['Business',fd.get('business')],['Package',sel.options[sel.selectedIndex].text.split(' · ')[0]],['Services',svcs.length?svcs.join(', '):'—'],['Call',dstr+', '+fd.get('time').split(' (')[0]],['Format',String(fd.get('format')).split(' (')[0]]];
     var box=document.getElementById('dSum'); box.innerHTML='';
     rows.forEach(function(r){var d=document.createElement('div'),a=document.createElement('span'),b=document.createElement('span');a.textContent=r[0];b.textContent=r[1];d.append(a,b);box.appendChild(d);});
     document.getElementById('dName').textContent=String(fd.get('name')).split(' ')[0];

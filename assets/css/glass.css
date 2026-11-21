@@ -1,0 +1,482 @@
+/* =====================================================================
+   YDMK — стекло и наклон (студийный гибрид)
+   1) .glass — CSS-стекло: размытие + насыщенность, световой кант сверху-слева,
+      затенение снизу, глянец по верхней части, радужная кромка, мягкая тень.
+      Одно стекло на весь сайт (WebGL-стекло главной убрано — вариант Б).
+   2) Карточки главной (#about, #packages).
+   3) .amb-zone — общий живой фон Ambient Light (ambient-light.js) на всю зону:
+      секции внутри прозрачные, свет идёт без швов. Точек и отдельных пятен нет.
+   4) [data-tilt] — наклон и блик (tilt.js).
+   ===================================================================== */
+:root{
+  --glass-bg:linear-gradient(160deg,rgba(255,255,255,.66) 0%,rgba(255,255,255,.42) 100%);
+  --glass-blur:blur(20px) saturate(1.7);
+  --glass-shadow:0 1px 2px rgba(60,55,110,.04),0 10px 24px -14px rgba(60,55,110,.14),0 28px 56px -28px rgba(130,110,190,.22);
+  --glass-shadow-hover:0 2px 4px rgba(60,55,110,.05),0 16px 32px -16px rgba(60,55,110,.18),0 40px 72px -30px rgba(130,110,190,.30);
+  --glass-muted:#55556a; /* вторичный текст на стекле: ≥ 5.5:1 */
+}
+
+/* ---------- 1. CSS-стекло ---------- */
+.glass{
+  position:relative;isolation:isolate;
+  background:var(--glass-bg);
+  -webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  border:1px solid rgba(255,255,255,.55);
+  box-shadow:
+    inset 1px 1px 0 rgba(255,255,255,.95),      /* световой кант сверху-слева */
+    inset -1px -1px 0 rgba(90,80,140,.10),       /* затенение снизу-справа */
+    var(--glass-shadow);
+  --muted:var(--glass-muted);
+}
+/* глянец по верхней части */
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;
+  background:linear-gradient(180deg,rgba(255,255,255,.45) 0%,rgba(255,255,255,0) 42%)}
+/* радужная кромка (имитация дисперсии): тонкое кольцо голубой → лаванда → розовый */
+.glass::after{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;padding:1px;
+  background:linear-gradient(135deg,rgba(255,255,255,.9),rgba(117,208,237,.55) 30%,rgba(196,188,219,.35) 55%,rgba(244,163,191,.55) 80%,rgba(255,255,255,.7));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);opacity:.75}
+
+/* ---------- 2. Карточки главной ---------- */
+/* карточки главной: прозрачная основа, текст поверх стекла */
+.vcard.glass,.card.glass{border-radius:24px}
+.card.glass.hot{border:1.5px solid var(--pink)}
+.vcard .tilt-in{display:block}
+.card .tilt-in{display:flex;flex-direction:column;flex:1;min-height:0}
+.card .tilt-in>ul{flex:1}
+.vcard p,.card .per,.card li{color:#4a4a5c}
+.tilt-in{transform-origin:50% 50%;will-change:auto}
+
+/* ---------- 3. Общий живой фон (Ambient Light) ---------- */
+.amb-zone{position:relative;isolation:isolate;background:#FBF9F8}
+.amb-layer{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:clip}
+/* холст размером с экран «прилипает» внутри зоны: рисуется один экран, а не вся страница */
+.amb-canvas{position:sticky;top:0;display:block;width:100%;height:100vh}
+/* мягкий вход: сверху и снизу зона плавно переходит в цвет страницы — без жёсткого края */
+.amb-layer::before,.amb-layer::after{content:"";position:absolute;left:0;right:0;height:140px;z-index:1}
+.amb-layer::before{top:0;background:linear-gradient(#FBF9F8,rgba(251,249,248,0))}
+.amb-layer::after{bottom:0;background:linear-gradient(rgba(251,249,248,0),#FBF9F8)}
+.amb-zone>*:not(.amb-layer){position:relative;z-index:1}
+/* секции внутри зоны прозрачные — у всех один фон */
+.amb-zone section,.amb-zone .alt,.amb-zone .band{background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none}
+.amb-zone .phead::after{display:none}
+
+/* ---------- Таблица планов ---------- */
+.tscroll.glass{border-radius:24px;background:linear-gradient(160deg,rgba(255,255,255,.56),rgba(255,255,255,.32))}
+.tscroll.glass table.plans{background:transparent}
+.tscroll.glass .plans th{background:rgba(255,255,255,.45);box-shadow:inset 0 -1px 0 rgba(255,255,255,.7),inset 0 -2px 0 rgba(90,80,140,.06)}
+.tscroll.glass .plans td{border-top:1px solid rgba(255,255,255,.6);color:#3e3e4e}
+.tscroll.glass .plans td+td{box-shadow:inset 1px 0 0 rgba(255,255,255,.5)}
+.tscroll.glass .plans tr:not(:first-child):hover td{background:rgba(255,255,255,.38)}
+.tscroll.glass .plans td:last-child{color:var(--ink)}
+
+/* ---------- Портфолио ---------- */
+.proj.glass{border-radius:24px;overflow:hidden}
+.proj.glass .thumb{margin:8px 8px 0;border-radius:18px;overflow:hidden}
+.proj.glass .client{color:#5f5b78}
+.proj.glass .ptags span{background:rgba(255,255,255,.55);box-shadow:inset 0 0 0 1px rgba(255,255,255,.7);color:#4a4760}
+.thumb .cat{background:rgba(255,255,255,.55);-webkit-backdrop-filter:blur(10px) saturate(1.6);backdrop-filter:blur(10px) saturate(1.6);box-shadow:inset 1px 1px 0 rgba(255,255,255,.9),0 4px 12px rgba(40,40,80,.10);color:#2f2f3c}
+
+/* ---------- Галерея кейса: медиа в стеклянной рамке ---------- */
+.gallery{position:relative;isolation:isolate}
+.gallery .g.gframe{padding:8px;background-clip:content-box;border-radius:20px;isolation:isolate;
+  -webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  border:1px solid rgba(255,255,255,.55);
+  box-shadow:inset 0 0 0 8px rgba(255,255,255,.38),inset 1px 1px 0 rgba(255,255,255,.95),inset -1px -1px 0 rgba(90,80,140,.12),var(--glass-shadow)}
+.gallery .g.gframe::after{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;padding:1px;z-index:2;
+  background:linear-gradient(135deg,rgba(255,255,255,.9),rgba(117,208,237,.55) 30%,rgba(196,188,219,.35) 55%,rgba(244,163,191,.55) 80%,rgba(255,255,255,.7));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);opacity:.75}
+.gallery .g.gframe.is-tilting{box-shadow:inset 0 0 0 8px rgba(255,255,255,.38),inset 1px 1px 0 rgba(255,255,255,.95),inset -1px -1px 0 rgba(90,80,140,.12),var(--glass-shadow-hover)}
+.gallery .g>*{position:relative;z-index:1}
+.gallery .g img,.gallery .g video{border-radius:12px;width:100%;height:100%;object-fit:cover}
+.gallery .play{background:rgba(255,255,255,.45);-webkit-backdrop-filter:blur(12px) saturate(1.6);backdrop-filter:blur(12px) saturate(1.6);
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.95),inset -1px -1px 0 rgba(90,80,140,.12),0 10px 24px -8px rgba(40,40,80,.35)}
+.gallery .play svg{fill:#fff}
+
+/* ---------- 4. Наклон + блик ---------- */
+.tilt-live{transform-origin:50% 50%}
+.proj.tilt-live{transition:box-shadow .3s} /* transform ведёт пружина, не CSS */
+.proj.tilt-live:hover{transform:none}
+.tilt-glare{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:3;opacity:0;transition:opacity .3s;
+  background:radial-gradient(260px circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.32),transparent 62%)}
+.is-tilting{z-index:5}
+.is-tilting .tilt-glare{opacity:1}
+.glass.is-tilting{box-shadow:inset 1px 1px 0 rgba(255,255,255,.95),inset -1px -1px 0 rgba(90,80,140,.10),var(--glass-shadow-hover)}
+
+/* ---------- Телефоны ---------- */
+@media(max-width:768px){
+  .glass{--glass-blur:blur(14px) saturate(1.5)}
+}
+@media(prefers-reduced-motion:reduce){.tilt-glare{display:none}}
+/* очень старые браузеры без backdrop-filter: плотнее подложка, чтобы текст читался */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .glass{background:rgba(255,255,255,.88)}
+}
+
+/* первый экран главной: волна мягко тает к низу, без жёсткого среза над общим фоном */
+.atmo .wv-bg{-webkit-mask:linear-gradient(#000 calc(100% - 220px),transparent);mask:linear-gradient(#000 calc(100% - 220px),transparent)}
+
+/* =====================================================================
+   5. Стекло на остальных страницах (главная, FAQ, контакты, правовые, кейсы)
+   + шапка и подвал на всём сайте. Основа — тот же .glass, что в портфолио.
+   Карточки портфолио (.proj, фильтры, .pcta) здесь не затрагиваются.
+   ===================================================================== */
+:root{--glass-lite:linear-gradient(160deg,rgba(255,255,255,.62),rgba(255,255,255,.38));
+  --glass-lite-shadow:inset 1px 1px 0 rgba(255,255,255,.95),inset -1px -1px 0 rgba(90,80,140,.08),0 8px 20px -12px rgba(60,55,110,.16);
+  --iris-line:linear-gradient(90deg,rgba(117,208,237,0),rgba(117,208,237,.6) 18%,rgba(196,188,219,.5) 50%,rgba(244,163,191,.6) 82%,rgba(244,163,191,0))}
+
+/* ---------- Шапка ---------- */
+nav.top{background:linear-gradient(180deg,rgba(255,255,255,.66),rgba(255,255,255,.44));
+  -webkit-backdrop-filter:blur(20px) saturate(1.7);backdrop-filter:blur(20px) saturate(1.7);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 12px 32px -18px rgba(60,55,110,.18)}
+nav.top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--iris-line);pointer-events:none}
+@media(max-width:960px){
+  .mnav{background:rgba(255,255,255,.35)}
+  .mnav.open{border-top:1px solid rgba(255,255,255,.75)}
+  .mnav a{border-bottom:1px solid rgba(255,255,255,.6);color:#3a3a48}
+}
+
+/* ---------- Подвал: стеклянная панель над пастельным светом ---------- */
+footer{position:relative;isolation:isolate;overflow:hidden;overflow:clip;border-top:0;padding:56px 0 28px;
+  background:linear-gradient(180deg,var(--bg) 0%,#f3f0f8 100%)}
+footer::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(38% 70% at 10% 75%,rgba(117,208,237,.42),transparent 70%),
+             radial-gradient(36% 70% at 90% 35%,rgba(244,163,191,.42),transparent 70%),
+             radial-gradient(40% 60% at 55% 105%,rgba(196,188,219,.55),transparent 70%)}
+footer>.fpanel.glass{border-radius:32px;padding:52px 48px 0;width:calc(100% - 64px);max-width:1136px} /* та же ширина, что у контента .wrap */
+.fpanel .fgrid{grid-template-columns:1.05fr 1fr .8fr 1.25fr;gap:40px}
+.fpanel li a{overflow-wrap:anywhere}
+@media(max-width:1080px){.fpanel .fgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.fpanel .fgrid{grid-template-columns:1fr}}
+.fpanel .fbot{border-top:1px solid rgba(255,255,255,.75);box-shadow:0 -1px 0 rgba(90,80,140,.07)}
+.fpanel .soc a{width:40px;height:40px;display:inline-grid;place-items:center;border-radius:50%;background:var(--glass-lite);box-shadow:var(--glass-lite-shadow)}
+.fpanel .soc svg{width:20px;height:20px}
+
+/* ---------- Общие стеклянные панели CTA ---------- */
+.cta-panel.glass{max-width:none;margin:0 auto;text-align:center;border-radius:32px;padding:56px 40px}
+.pcta .cta-panel{padding:48px 32px}
+.pcta .cta-panel p,.hcta .cta-panel p{color:var(--muted)}
+
+/* ---------- Главная: процесс ---------- */
+.step{padding-bottom:18px}
+.step-card.glass{border-radius:20px;padding:18px 24px 20px}
+.step-card h3{padding-top:0}
+.step .num{margin-top:12px;box-shadow:inset 1px 1px 0 rgba(255,255,255,.55),0 0 0 5px rgba(255,255,255,.5),0 10px 20px -8px var(--c)}
+.step:not(:last-child)::after{top:68px;bottom:-6px}
+.step p{color:var(--muted)}
+
+/* ---------- Главная: отзывы ---------- */
+.rev-track{padding:44px 32px 64px;margin:-30px -32px -36px;scroll-padding-inline:32px;
+  /* края ленты растворяются: карточки уходят «в туман», тени не срезаются */
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 32px,#000 calc(100% - 32px),transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 32px,#000 calc(100% - 32px),transparent 100%)}
+@media(max-width:640px){.rev-track{padding-inline:18px;margin-inline:-18px;scroll-padding-inline:18px;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%)}}
+.review.glass{border-radius:22px}
+.review.glass p{color:#3e3e4e}
+.review.glass .src{border-top:1px solid rgba(255,255,255,.7);box-shadow:0 -1px 0 rgba(90,80,140,.06)}
+.av{box-shadow:0 0 0 3px rgba(255,255,255,.7),0 6px 14px -6px rgba(60,55,110,.35)}
+.rating.glass{border-radius:20px}
+.rev-nav button{background:var(--glass-lite);border:1px solid rgba(255,255,255,.7);box-shadow:var(--glass-lite-shadow);
+  -webkit-backdrop-filter:blur(12px) saturate(1.6);backdrop-filter:blur(12px) saturate(1.6);color:#3a3a48}
+.rev-nav button:hover{border-color:rgba(244,163,191,.8);box-shadow:var(--glass-lite-shadow),0 0 0 3px rgba(244,163,191,.18)}
+.rev-foot small{color:#6a6680}
+
+/* ---------- FAQ (главная и страница FAQ) ---------- */
+.faq details.glass{border-radius:18px;box-shadow:inset 1px 1px 0 rgba(255,255,255,.95),inset -1px -1px 0 rgba(90,80,140,.10),0 6px 18px -12px rgba(60,55,110,.16);transition:box-shadow .3s}
+.faq details.glass[open]{box-shadow:inset 1px 1px 0 rgba(255,255,255,.95),inset -1px -1px 0 rgba(90,80,140,.10),var(--glass-shadow)}
+.faq details.glass[open]::after{opacity:1}
+.faq details.glass summary{border-radius:18px}
+.faq details.glass p{color:var(--muted)}
+.fgroup{color:#6a6680}
+
+/* ---------- Контакты ---------- */
+.cinfo.glass{border-radius:24px;padding:30px 28px}
+.cinfo .next{border-top:1px solid rgba(255,255,255,.75);box-shadow:0 -1px 0 rgba(90,80,140,.07)}
+.cinfo .cline svg,.cinfo .soc svg{stroke:#3fa6cf}
+.form.glass{border-radius:28px;background:linear-gradient(160deg,rgba(255,255,255,.74),rgba(255,255,255,.5))}
+.form.glass fieldset{border-top:1px solid rgba(255,255,255,.8);box-shadow:inset 0 1px 0 rgba(90,80,140,.07)}
+.form.glass legend{color:#6a6680}
+.form.glass .f label,.form.glass .f .lab{color:#2f2f3c}
+.form.glass .f input,.form.glass .f select,.form.glass .f textarea,.form.glass .chip span{
+  background-color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.85);
+  box-shadow:inset 1px 1px 3px rgba(90,80,140,.10),inset -1px -1px 0 rgba(255,255,255,.7)}
+.form.glass .f input::placeholder,.form.glass .f textarea::placeholder{color:#76738a}
+.form.glass .f input:focus,.form.glass .f select:focus,.form.glass .f textarea:focus{background-color:rgba(255,255,255,.88);border-color:#9ccfe9;box-shadow:0 0 0 4px rgba(108,199,236,.2)}
+.form.glass .f.err input,.form.glass .f.err select,.form.glass .f.err textarea{border-color:#e07a9b}
+.form.glass .chip span:hover{border-color:rgba(244,163,191,.8)}
+.form.glass .chip input:checked+span{background:linear-gradient(90deg,rgba(117,208,237,.28),rgba(244,163,191,.28));border-color:rgba(255,255,255,.95);
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.9),0 6px 14px -8px rgba(60,55,110,.35);color:#111}
+.form.glass .summary{background:rgba(255,255,255,.5);box-shadow:var(--glass-lite-shadow)}
+.form.glass .summary div{border-bottom-color:rgba(150,140,190,.3)}
+
+/* ---------- Правовые страницы ---------- */
+.legal.glass{border-radius:28px;padding:44px 52px 48px;margin-bottom:90px;background:linear-gradient(160deg,rgba(255,255,255,.76),rgba(255,255,255,.54))}
+.legal.glass .upd{color:#6a6680}
+.legal.glass .box{background:var(--glass-lite);border:1px solid rgba(255,255,255,.8);box-shadow:var(--glass-lite-shadow)}
+
+/* ---------- Кейсы ---------- */
+.hero-frame.glass{margin-top:34px;padding:10px;border-radius:34px}
+.hero-frame .case-hero{margin-top:0;border-radius:24px}
+.meta.glass{border-radius:22px;background:var(--glass-bg)}
+.meta small{color:#6a6680}
+.story>div.glass{border-top:1px solid rgba(255,255,255,.55);border-radius:22px;padding:24px 24px 26px}
+.story>div.glass h2::before{content:"";display:block;width:36px;height:3px;border-radius:3px;background:var(--g);margin-bottom:14px}
+.res.glass{border-radius:20px}
+.case-cta.glass{border-top:1px solid rgba(255,255,255,.55);border-radius:28px;padding:36px 40px;margin-block:64px 90px}
+
+/* ---------- Телефоны ---------- */
+@media(max-width:640px){
+  footer{padding:36px 0 20px}
+  footer>.fpanel.glass{padding:34px 22px 0;border-radius:26px;width:calc(100% - 36px)}
+  .cta-panel.glass{padding:40px 22px;border-radius:26px}
+  .cinfo.glass{padding:24px 20px}
+  .legal.glass{padding:28px 20px 32px;border-radius:24px}
+  .case-cta.glass{padding:28px 22px}
+  .hero-frame.glass{padding:7px;border-radius:26px}
+  .hero-frame .case-hero{border-radius:20px}
+  .step-card.glass{padding:16px 18px 18px}
+}
+
+/* ---------- Без полос прокрутки: таблица и лента отзывов листаются свайпом/трекпадом, отзывы — ещё и стрелками ---------- */
+.tscroll,.rev-track{scrollbar-width:none;-ms-overflow-style:none}
+.tscroll::-webkit-scrollbar,.rev-track::-webkit-scrollbar{display:none}
+.tscroll{overflow-y:hidden}
+/* на FAQ блок-призыв той же ширины, что колонка вопросов */
+.faq .pcta .cta-panel{max-width:860px}
+
+/* =====================================================================
+   6. Кнопки: цветное свечение вместо тёмной тени + лёгкий контур
+   Палитра: #75D0ED (голубой) → #FFB3C2 (розовый), фон #FBFAF8.
+   .btn  — заливка градиентом в ::before, свечение в ::after (под ней).
+   .btn2 — матовое стекло + градиентный контур (уже в main.css) + слабое свечение.
+   ===================================================================== */
+:root{--glow:linear-gradient(90deg,#75D0ED,#C9BEE6 50%,#FFB3C2)}
+.btn{isolation:isolate;background:none!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),inset 0 1px 0 rgba(255,255,255,.6)}
+.btn::before{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;background:var(--g);background-size:140% 100%;transition:background-position .35s}
+.btn::after{content:"";position:absolute;left:10%;right:10%;top:30%;bottom:-6px;border-radius:inherit;z-index:-2;pointer-events:none;
+  background:var(--glow);filter:blur(14px);opacity:.65;transform:translateY(4px);transition:opacity .3s,transform .3s,filter .3s}
+.btn:hover{box-shadow:inset 0 0 0 1px rgba(255,255,255,.7),inset 0 1px 0 rgba(255,255,255,.7)}
+.btn:hover::before{background-position:100% 0}
+.btn:hover::after{opacity:.95;transform:translateY(7px) scale(1.04);filter:blur(16px)}
+.btn2{background:none;-webkit-backdrop-filter:blur(10px) saturate(1.5);backdrop-filter:blur(10px) saturate(1.5)}
+/* заливка-стекло и градиентный контур одним слоем — свечение под ним не красит текст */
+.btn2::before{-webkit-mask:none;mask:none;border:1.5px solid transparent;
+  background:linear-gradient(rgba(251,250,248,.92),rgba(251,250,248,.92)) padding-box,var(--g) border-box; /* #FBFAF8 — тёплое светлое стекло */background-size:100% 100%,140% 100%;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
+.btn2:hover::before{background-position:0 0,100% 0}
+.btn2::after{content:"";position:absolute;left:14%;right:14%;top:40%;bottom:-4px;border-radius:inherit;z-index:-2;pointer-events:none;
+  background:var(--glow);filter:blur(14px);opacity:.25;transform:translateY(4px);transition:opacity .3s,transform .3s}
+.btn2:hover{box-shadow:none}
+.btn2:hover::after{opacity:.55;transform:translateY(6px)}
+.btn:focus-visible,.btn2:focus-visible{outline:2px solid #5aa9d6;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.btn::after,.btn2::after{transition:none}}
+
+/* =====================================================================
+   7. Бейдж «Most Popular» поверх рамки + волна первого экрана перетекает
+      во второй блок и растворяется в общем свете (только главная)
+   ===================================================================== */
+.card .tag{z-index:4;white-space:nowrap;
+  box-shadow:0 0 0 4px rgba(255,255,255,.9),inset 0 1px 0 rgba(255,255,255,.5),
+             0 8px 18px -6px rgba(255,179,194,.65),0 6px 16px -8px rgba(117,208,237,.6)}
+
+/* волна выходит за низ первого экрана: по горизонтали обрезаем, по вертикали нет */
+.atmo{overflow:visible;overflow-x:clip}
+.atmo .wv-bg{bottom:-340px;
+  -webkit-mask:linear-gradient(#000 calc(100% - 560px),transparent);mask:linear-gradient(#000 calc(100% - 560px),transparent)}
+/* верх следующей зоны прозрачный: волна видна под ней, а общий свет плавно проявляется поверх */
+.atmo+.amb-zone:not(.amb-fallback){background:transparent!important} /* скрипт ставит фон инлайном */
+.atmo+.amb-zone>.amb-layer{-webkit-mask:linear-gradient(transparent 0,#000 420px);mask:linear-gradient(transparent 0,#000 420px)}
+.atmo+.amb-zone>.amb-layer::before{display:none}
+
+/* =====================================================================
+   8. Стеклянные элементы выбора в форме (glass-select.js)
+   Настоящий <select> спрятан (.gs-native), но остаётся в форме.
+   ===================================================================== */
+.form.glass .f{position:relative}
+.gs-native{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:0!important;opacity:0;pointer-events:none;clip:rect(0 0 0 0);overflow:hidden;border:0!important}
+:root{--spring:cubic-bezier(.34,1.56,.64,1)}
+
+/* ---------- Карточки тарифов ---------- */
+.gs-plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gs-plan{position:relative;display:block;cursor:pointer;border-radius:18px;isolation:isolate}
+.gs-plan input{position:absolute;opacity:0;pointer-events:none}
+.gs-plan-in{position:relative;display:flex;flex-direction:column;gap:2px;height:100%;padding:16px 44px 16px 18px;border-radius:18px;
+  background:rgba(251,250,248,.62);border:1px solid rgba(255,255,255,.85);
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.95),inset -1px -1px 0 rgba(90,80,140,.06),0 6px 16px -12px rgba(60,55,110,.18);
+  transition:background .25s,box-shadow .3s,transform .3s var(--spring)}
+.gs-plan-name{font-weight:600;font-size:.98rem;color:var(--ink)}
+.gs-plan-desc{font-size:.8rem;line-height:1.4;color:#5d5a72}
+.gs-plan-price{margin-top:8px;font-weight:700;font-size:1.18rem;font-variant-numeric:tabular-nums;width:fit-content;
+  background:var(--g);-webkit-background-clip:text;background-clip:text;color:transparent}
+.gs-plan-tick{position:absolute;top:14px;right:14px;width:22px;height:22px;border-radius:50%;
+  background:rgba(255,255,255,.7);box-shadow:inset 0 0 0 1.5px rgba(150,140,190,.35);transition:background .25s,box-shadow .25s,transform .35s var(--spring)}
+.gs-plan-tick::after{content:"";position:absolute;left:7.5px;top:4px;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) scale(0);transition:transform .3s var(--spring)}
+/* градиентный контур и свечение — появляются у выбранной карточки */
+.gs-plan-in::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1.5px;pointer-events:none;opacity:0;transition:opacity .25s;
+  background:var(--g);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.gs-plan-in::after{content:"";position:absolute;left:12%;right:12%;bottom:-8px;height:40%;border-radius:inherit;z-index:-1;pointer-events:none;
+  background:var(--glow);filter:blur(16px);opacity:0;transition:opacity .3s}
+.gs-plan:hover .gs-plan-in{background:rgba(255,255,255,.78);transform:translateY(-2px)}
+.gs-plan input:checked+.gs-plan-in{background:rgba(255,255,255,.88)}
+.gs-plan input:checked+.gs-plan-in::before{opacity:1}
+.gs-plan input:checked+.gs-plan-in::after{opacity:.5}
+.gs-plan input:checked+.gs-plan-in .gs-plan-tick{background:var(--g);box-shadow:0 4px 10px -4px rgba(244,163,191,.8);transform:scale(1.05)}
+.gs-plan input:checked+.gs-plan-in .gs-plan-tick::after{transform:rotate(45deg) scale(1)}
+.gs-plan input:focus-visible+.gs-plan-in{outline:2px solid #5aa9d6;outline-offset:3px}
+.gs-plan-extra{margin-top:12px}
+.f.err .gs-plan-in{border-color:#e07a9b}
+
+/* ---------- Сегментный переключатель ---------- */
+.gs-seg{position:relative;display:flex;padding:4px;border-radius:16px;background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.85);
+  box-shadow:inset 1px 1px 3px rgba(90,80,140,.10),inset -1px -1px 0 rgba(255,255,255,.7)}
+.gs-seg-it{position:relative;z-index:1;flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;padding:6px 6px;border-radius:12px;min-height:40px}
+.gs-seg-it input{position:absolute;opacity:0;pointer-events:none}
+.gs-seg-txt{min-width:0}
+.gs-seg-txt b,.gs-seg-txt small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gs-seg-txt b{font-weight:500;font-size:.86rem;color:#3a3a48;line-height:1.25}
+.gs-seg-txt small{font-size:.7rem;color:#6a6680;line-height:1.3}
+.gs-seg-it:has(input:checked) b{color:#111;font-weight:600}
+.gs-seg-it:has(input:focus-visible){outline:2px solid #5aa9d6;outline-offset:1px}
+.gs-seg-it:hover b{color:#111}
+.gs-seg-ind{position:absolute;left:0;top:4px;bottom:4px;width:0;border-radius:12px;opacity:0;pointer-events:none;
+  background:linear-gradient(160deg,#fff,#FBFAF8);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.95),0 6px 14px -8px rgba(60,55,110,.3),0 8px 18px -8px rgba(255,179,194,.55),0 6px 16px -10px rgba(117,208,237,.55)}
+.gs-ready .gs-seg-ind{transition:transform .5s var(--spring),width .5s var(--spring),opacity .2s}
+
+/* ---------- Стеклянный выпадающий список ---------- */
+.gs-list{position:relative}
+.gs-trigger{position:relative;display:block;width:100%;text-align:left;cursor:pointer;font:400 .95rem var(--font);color:var(--ink);
+  padding:12px 40px 12px 14px;border-radius:12px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.85);
+  box-shadow:inset 1px 1px 3px rgba(90,80,140,.10),inset -1px -1px 0 rgba(255,255,255,.7);transition:border-color .2s,box-shadow .2s,background .2s}
+.gs-val{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.gs-list.is-empty .gs-val{color:#5d5a72}
+.gs-trigger::after{content:"";position:absolute;right:15px;top:50%;width:8px;height:8px;margin-top:-6px;border:solid #8a86a0;border-width:0 1.6px 1.6px 0;transform:rotate(45deg);transition:transform .35s var(--spring),margin .35s var(--spring)}
+.gs-trigger:hover{background:rgba(255,255,255,.75)}
+.gs-trigger:focus-visible,.gs-list.is-open .gs-trigger{outline:none;background:rgba(255,255,255,.88);border-color:#9ccfe9;box-shadow:0 0 0 4px rgba(108,199,236,.2)}
+.gs-list.is-open .gs-trigger::after{transform:rotate(225deg);margin-top:-2px}
+.f.err .gs-trigger{border-color:#e07a9b}
+.gs-pop{position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:30;margin:0;padding:6px;list-style:none;max-height:296px;overflow-y:auto;overscroll-behavior:contain;
+  border-radius:16px;background:linear-gradient(160deg,rgba(255,255,255,.92),rgba(251,250,248,.84));
+  -webkit-backdrop-filter:blur(22px) saturate(1.7);backdrop-filter:blur(22px) saturate(1.7);border:1px solid rgba(255,255,255,.9);
+  box-shadow:inset 1px 1px 0 #fff,inset -1px -1px 0 rgba(90,80,140,.06),var(--glass-shadow-hover);
+  scrollbar-width:thin;scrollbar-color:rgba(150,140,190,.4) transparent;
+  opacity:0;visibility:hidden;transform:translateY(-8px) scale(.96);transform-origin:50% 0;
+  transition:opacity .16s,transform .42s var(--spring),visibility 0s .42s}
+.gs-list.is-open .gs-pop{opacity:1;visibility:visible;transform:none;transition:opacity .16s,transform .42s var(--spring),visibility 0s}
+.gs-list.gs-up .gs-pop{top:auto;bottom:calc(100% + 8px);transform-origin:50% 100%}
+.gs-list.gs-up:not(.is-open) .gs-pop{transform:translateY(8px) scale(.96)}
+.gs-opt{position:relative;padding:10px 38px 10px 12px;border-radius:10px;font-size:.93rem;line-height:1.35;color:#2f2f3c;cursor:pointer;transition:background .15s}
+.gs-opt+.gs-opt{margin-top:2px}
+.gs-opt.gs-ph{color:#6a6680}
+.gs-opt.is-active{background:linear-gradient(90deg,rgba(117,208,237,.2),rgba(255,179,194,.2));box-shadow:inset 0 0 0 1px rgba(255,255,255,.95)}
+.gs-opt[aria-selected="true"]{font-weight:600;color:#111}
+.gs-opt[aria-selected="true"]::after{content:"";position:absolute;right:16px;top:50%;width:5px;height:10px;margin-top:-7px;border:solid #d46f97;border-width:0 2px 2px 0;transform:rotate(45deg)}
+
+@media(max-width:640px){
+  .gs-plan-grid{grid-template-columns:1fr}
+  .gs-plan-grid{gap:10px}
+  .gs-plan-in{padding:12px 44px 12px 16px}
+  .gs-plan-price{margin-top:4px;font-size:1.05rem}
+  .gs-plan-tick{top:12px;right:12px}
+}
+.gs-opt.gs-ph[aria-selected="true"]{font-weight:400;color:#6a6680}.gs-opt.gs-ph::after{display:none}
+
+/* =====================================================================
+   9. Форма: чище и контрастнее
+   • свечение выбранной карточки — только снаружи, под нижним краем
+   • видимые границы элементов выбора (#8C86AE ≈ 3:1 к стеклу — WCAG 1.4.11)
+   • тёмный текст в чипах и сегментах, насыщенный выбранный чип
+   ===================================================================== */
+:root{--ctl-line:#8C86AE;--ctl-text:#2f2f3c}
+/* карточка тарифа */
+.gs-plan-in{border-color:rgba(140,134,174,.55)}
+.gs-plan input:checked+.gs-plan-in{background:rgba(251,250,248,.96)}
+.gs-plan-in::after{top:calc(100% - 4px);bottom:auto;height:16px;left:16%;right:16%;filter:blur(12px)}
+.gs-plan input:checked+.gs-plan-in::after{opacity:.55}
+.gs-plan-desc{color:#4a4760}
+.gs-plan-tick{box-shadow:inset 0 0 0 1.5px var(--ctl-line)}
+
+/* поля, чипы, сегменты, список */
+.form.glass .f input,.form.glass .f select,.form.glass .f textarea,.form.glass .chip span,.gs-trigger,.gs-seg{border-color:var(--ctl-line)}
+.form.glass .f input:focus,.form.glass .f select:focus,.form.glass .f textarea:focus,.gs-trigger:focus-visible,.gs-list.is-open .gs-trigger{border-color:#4fa9d1}
+.form.glass .chip span{color:var(--ctl-text)}
+.form.glass .chip span:hover{border-color:#d46f97}
+.form.glass .chip input:checked+span{border:1px solid transparent;color:#111;font-weight:500;
+  background:linear-gradient(90deg,#d6eff9,#fbe1e9) padding-box,var(--g) border-box;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 6px 14px -8px rgba(212,111,151,.45)}
+.gs-seg-txt b{color:var(--ctl-text)}
+.gs-seg-txt small{color:#5d5a72}
+.gs-seg-ind{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.95),0 0 0 1px rgba(140,134,174,.45),0 6px 14px -8px rgba(60,55,110,.3),0 8px 18px -8px rgba(255,179,194,.55),0 6px 16px -10px rgba(117,208,237,.55)}
+.gs-list.is-empty .gs-val{color:#4a4760}
+.gs-trigger::after{border-color:#5d5a72}
+
+/* подписи и маски */
+.form.glass legend{color:#55516e}
+.form.glass .hint,.form.glass .opt{color:#5d5a72}
+.form.glass .f input::placeholder,.form.glass .f textarea::placeholder{color:#6a6680}
+.form.glass input[type=date]::-webkit-datetime-edit{color:#4a4760}
+.form.glass input[type=date]:valid::-webkit-datetime-edit{color:var(--ink)}
+.form.glass .consent{color:#4a4760}
+.f .gs-seg-it{display:flex;margin-bottom:0}.f .gs-plan{margin-bottom:0}
+
+/* =====================================================================
+   10. Свечение карточки тарифа — на внешнем контейнере (.gs-plan),
+   а не внутри карточки: при наведении карточка становится отдельным слоем,
+   и свечение изнутри проступало поверх заливки.
+   ===================================================================== */
+.gs-plan-in::after{content:none}
+.gs-plan::after{content:"";position:absolute;left:16%;right:16%;top:calc(100% - 2px);height:14px;border-radius:50%;z-index:-1;pointer-events:none;
+  background:var(--glow);filter:blur(11px);opacity:0;transition:opacity .3s}
+.gs-plan:has(input:checked)::after{opacity:.6}
+.gs-plan input:checked+.gs-plan-in{background:#FBFAF8}
+
+/* =====================================================================
+   11. Стеклянный календарь (glass-date.js)
+   ===================================================================== */
+.gs-date{position:relative}
+.gs-date-btn{padding-right:44px}
+.gs-date-btn::after{content:none}
+.gs-date-ico{position:absolute;right:14px;top:50%;width:18px;height:18px;margin-top:-9px;border-radius:4px;border:1.6px solid #5d5a72;border-top-width:4px}
+.gs-date-ico::before,.gs-date-ico::after{content:"";position:absolute;top:-7px;width:1.6px;height:5px;background:#5d5a72;border-radius:1px}
+.gs-date-ico::before{left:3px}.gs-date-ico::after{right:3px}
+.gs-date.is-empty .gs-val{color:#4a4760}
+.gs-date.is-open .gs-trigger{background:rgba(255,255,255,.88);border-color:#4fa9d1;box-shadow:0 0 0 4px rgba(108,199,236,.2)}
+.f.err .gs-date-btn{border-color:#e07a9b}
+.gs-cal{position:absolute;left:0;top:calc(100% + 8px);z-index:30;width:316px;padding:14px 14px 10px;border-radius:20px;
+  background:linear-gradient(160deg,rgba(255,255,255,.94),rgba(251,250,248,.88));
+  -webkit-backdrop-filter:blur(22px) saturate(1.7);backdrop-filter:blur(22px) saturate(1.7);border:1px solid rgba(255,255,255,.95);
+  box-shadow:inset 1px 1px 0 #fff,inset -1px -1px 0 rgba(90,80,140,.06),var(--glass-shadow-hover);
+  opacity:0;visibility:hidden;transform:translateY(-8px) scale(.96);transform-origin:20% 0;
+  transition:opacity .16s,transform .42s var(--spring),visibility 0s .42s}
+.gs-date.is-open .gs-cal{opacity:1;visibility:visible;transform:none;transition:opacity .16s,transform .42s var(--spring),visibility 0s}
+.gs-date.gs-up .gs-cal{top:auto;bottom:calc(100% + 8px);transform-origin:20% 100%}
+.gs-date.gs-up:not(.is-open) .gs-cal{transform:translateY(8px) scale(.96)}
+.gs-cal-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.gs-cal-title{font-size:.98rem;font-weight:600;color:var(--ink)}
+.gs-cal-nav{width:34px;height:34px;border-radius:50%;border:1px solid var(--ctl-line);cursor:pointer;position:relative;
+  background:rgba(251,250,248,.9);box-shadow:inset 0 1px 0 #fff;transition:border-color .2s,box-shadow .2s}
+.gs-cal-nav::before{content:"";position:absolute;left:50%;top:50%;width:7px;height:7px;border:solid #3a3a48;border-width:0 1.6px 1.6px 0}
+.gs-prev::before{transform:translate(-30%,-50%) rotate(135deg)}
+.gs-next::before{transform:translate(-70%,-50%) rotate(-45deg)}
+.gs-cal-nav:hover{border-color:#d46f97;box-shadow:inset 0 1px 0 #fff,0 0 0 3px rgba(244,163,191,.18)}
+.gs-cal-nav:disabled{opacity:.35;cursor:default;box-shadow:none;border-color:var(--ctl-line)}
+.gs-cal-nav:focus-visible,.gs-day:focus-visible{outline:2px solid #4fa9d1;outline-offset:2px}
+.gs-cal-grid{width:100%;border-collapse:separate;border-spacing:2px}
+.gs-cal-grid th{font-size:.72rem;font-weight:600;letter-spacing:.04em;color:#5d5a72;padding:4px 0 6px;text-align:center}
+.gs-cal-grid td{padding:0;text-align:center}
+.gs-day{width:38px;height:38px;border-radius:12px;border:0;background:none;cursor:pointer;font:500 .9rem var(--font);color:var(--ctl-text);
+  font-variant-numeric:tabular-nums;position:relative;isolation:isolate;transition:background .15s,color .15s}
+.gs-day:hover:not(.is-off){background:linear-gradient(90deg,rgba(117,208,237,.2),rgba(255,179,194,.2));box-shadow:inset 0 0 0 1px rgba(255,255,255,.95)}
+.gs-day.is-out{color:#6a6680}
+.gs-day.is-off{color:#a9a4c0;cursor:default;text-decoration:line-through;text-decoration-color:rgba(169,164,192,.6)}
+.gs-day.is-today{box-shadow:inset 0 0 0 1.5px var(--ctl-line)}
+.gs-day.is-sel{color:#fff;font-weight:700;background:var(--g)}
+.gs-day.is-sel::after{content:"";position:absolute;left:12%;right:12%;top:calc(100% - 4px);height:10px;border-radius:50%;z-index:-1;background:var(--glow);filter:blur(7px);opacity:.7}
+.gs-cal-note{margin-top:6px;font-size:.74rem;color:#5d5a72;text-align:center}
+/* всплывающие окна поверх стеклянной формы: размытие «стекла на стекле» ненадёжно — делаем плотными */
+.gs-cal,.gs-pop{background:linear-gradient(160deg,#ffffff,#FBFAF8 70%,#f7f3fa)}
+.gs-day.is-off{text-decoration:none;color:#b3aec8}
+.gs-day.is-off.is-today{box-shadow:inset 0 0 0 1.5px rgba(140,134,174,.45)}

@@ -24,6 +24,7 @@
 <meta property="og:image:alt" content="Your Digital Marketing Keys – Web Design, CRM &amp; Marketing in Toronto &amp; GTA">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="assets/css/main.css">
+<link rel="stylesheet" href="assets/css/glass.css">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -39,7 +40,7 @@
 
 <nav class="top" aria-label="Main">
   <div class="wrap">
-    <a class="logo" href="./" aria-label="Your Digital Marketing Keys – home"><img src="assets/img/logo.png" alt="Your Digital Marketing Keys" width="383" height="40"></a>
+    <a class="logo" href="./" aria-label="Your Digital Marketing Keys – home"><img src="assets/img/logo.svg" alt="Your Digital Marketing Keys" width="383" height="40"></a>
     <div class="links">
       <a href="./#about">About</a>
       <a href="./#packages">Packages</a>
@@ -62,7 +63,7 @@
   </div>
 </nav>
 
-<main>
+<main data-ambient-zone>
   <header class="phead">
     <div class="wrap">
       <h1>Let's talk about your <span class="gt">project</span></h1>
@@ -70,15 +71,15 @@
     </div>
   </header>
   <div class="wrap cgrid">
-    <div class="cinfo">
+    <div class="cinfo glass">
       <div class="cline"><svg><use href="#i-mail"/></svg><div><small>Email</small><a href="mailto:info@yourdigitalmarketingkeys.com">info@yourdigitalmarketingkeys.com</a></div></div>
       <div class="cline"><svg><use href="#i-phone"/></svg><div><small>Phone / WhatsApp</small><a href="https://wa.me/17806688612" target="_blank" rel="noopener">+1 (780) 668-8612</a></div></div>
       <div class="cline"><svg><use href="#i-time"/></svg><div><small>Hours</small>Mon–Sat, 9:00–19:00 (ET)</div></div>
       <div class="cline"><svg><use href="#i-pin"/></svg><div><small>Location</small>Mississauga, ON · Serving the GTA, Canada &amp; Worldwide</div></div>
       <div class="soc">
-        <a href="https://www.instagram.com/yourdigitalmarketingkeys?stkn=MXE5bGRibDMwNWkzcg%3D%3D&utm_source=qr" target="_blank" rel="noopener" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a>
-        <a href="https://www.facebook.com/share/1CYwkNndCK/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook"><svg><use href="#i-fb"/></svg></a>
-        <a href="https://www.linkedin.com/company/yourdigitalmarketingkeys/about/?viewAsMember=true" target="_blank" rel="noopener" aria-label="LinkedIn"><svg><use href="#i-in"/></svg></a>
+        <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a>
+        <a href="https://facebook.com/" target="_blank" rel="noopener" aria-label="Facebook"><svg><use href="#i-fb"/></svg></a>
+        <a href="https://linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg><use href="#i-in"/></svg></a>
       </div>
       <div class="next">
         <h2>What happens after you submit</h2>
@@ -90,33 +91,25 @@
       </div>
     </div>
 
-    <div class="form" id="formCard">
+    <div class="form glass" id="formCard">
       <form id="reqForm" novalidate>
         <h2>Request a Free Consultation</h2>
-        <p class="hint">Fields marked <span class="req">*</span> are required. It takes about 2 minutes.</p>
+        <p class="hint">Fields marked <span class="req">*</span> are required. It takes about a minute.</p>
         <fieldset>
-          <legend>Your contacts</legend>
+          <legend>About you</legend>
           <div class="fg">
             <div class="f"><label for="f-name">Full name <span class="req">*</span></label><input id="f-name" name="name" autocomplete="name" required placeholder="Jane Smith"><div class="msg">Please enter your name.</div></div>
             <div class="f"><label for="f-email">Email <span class="req">*</span></label><input id="f-email" name="email" type="email" autocomplete="email" required placeholder="jane@business.ca"><div class="msg">Please enter a valid email address.</div></div>
             <div class="f"><label for="f-phone">Phone <span class="req">*</span></label><input id="f-phone" name="phone" type="tel" autocomplete="tel" required placeholder="+1 (___) ___-____"><div class="msg">Please enter a phone number.</div></div>
-            <div class="f"><label for="f-via">Preferred contact method</label><select id="f-via" name="via"><option>Phone call</option><option>WhatsApp</option><option>Telegram</option><option>Email</option></select></div>
-          </div>
-        </fieldset>
-        <fieldset>
-          <legend>Your business</legend>
-          <div class="fg">
             <div class="f"><label for="f-biz">Business name <span class="req">*</span></label><input id="f-biz" name="business" autocomplete="organization" required placeholder="Smith Dental Clinic"><div class="msg">Please enter your business name.</div></div>
-            <div class="f"><label for="f-ind">Industry</label><select id="f-ind" name="industry"><option value="">Select industry</option><option>Restaurant / Café</option><option>Beauty / Salon / Spa</option><option>Health / Clinic</option><option>Construction / Landscaping</option><option>Retail / Ecommerce</option><option>Real Estate</option><option>Education / Courses</option><option>Professional Services</option><option>Other</option></select></div>
-            <div class="f"><label for="f-site">Current website <span class="opt">(optional)</span></label><input id="f-site" name="website" type="url" placeholder="https://"></div>
-            <div class="f"><label for="f-loc">Business location</label><select id="f-loc" name="location"><option>Greater Toronto Area</option><option>Elsewhere in Ontario</option><option>Elsewhere in Canada</option><option>USA</option><option>Outside North America</option></select></div>
+            <div class="f full"><label for="f-site">Current website <span class="opt">(optional)</span></label><input id="f-site" name="website" type="url" placeholder="https://"></div>
           </div>
         </fieldset>
         <fieldset>
           <legend>What you need</legend>
           <div class="fg">
             <div class="f full"><label for="f-pkg">Package <span class="req">*</span></label>
-              <select id="f-pkg" name="package" required>
+              <select id="f-pkg" data-gs="plans" name="package" required>
                 <option value="">Choose a package</option>
                 <optgroup label="Website packages">
                   <option value="starter">Starter – Landing page · $2,800</option>
@@ -140,30 +133,16 @@
                 <label class="chip"><input type="checkbox" id="s7" name="svc" value="Brand photography"><span>Brand Photography</span></label>
                 <label class="chip"><input type="checkbox" id="s8" name="svc" value="Video / Reels"><span>Video &amp; Reels</span></label>
               </div></div>
-            <div class="f"><label for="f-budget">Budget range</label><select id="f-budget" name="budget"><option value="">Select budget</option><option>Under $3,000</option><option>$3,000 – $7,000</option><option>$7,000 – $12,000</option><option>$12,000+</option><option>Monthly plan only</option></select></div>
-            <div class="f"><label for="f-when">Desired launch</label><select id="f-when" name="timeline"><option>As soon as possible</option><option>Within 1 month</option><option>1–3 months</option><option>Just exploring</option></select></div>
-            <div class="f full"><span class="lab">Payment preference</span>
-              <div class="chips">
-                <label class="chip"><input type="radio" id="p1" name="pay" value="0% financing" checked><span>0% financing (installments)</span></label>
-                <label class="chip"><input type="radio" id="p2" name="pay" value="Pay in full"><span>Pay in full – save 10%</span></label>
-                <label class="chip"><input type="radio" id="p3" name="pay" value="Not sure"><span>Not sure yet</span></label>
-              </div></div>
           </div>
         </fieldset>
         <fieldset>
           <legend>Discovery call</legend>
           <div class="fg">
-            <div class="f"><label for="f-date">Preferred date <span class="req">*</span></label><input id="f-date" name="date" type="date" required><div class="msg">Please pick a date (Mon–Sat).</div></div>
-            <div class="f"><label for="f-time">Preferred time</label><select id="f-time" name="time"><option>Morning (9:00–12:00)</option><option>Afternoon (12:00–16:00)</option><option>Evening (16:00–19:00)</option></select></div>
-            <div class="f"><label for="f-fmt">Call format</label><select id="f-fmt" name="format"><option>Phone call</option><option>Video call (Zoom / Google Meet)</option><option>In person (GTA)</option></select></div>
-            <div class="f"><span class="lab">Language</span>
-              <div class="chips">
-                <label class="chip"><input type="radio" id="l1" name="lang" value="English" checked><span>EN</span></label>
-                <label class="chip"><input type="radio" id="l2" name="lang" value="French"><span>FR</span></label>
-                <label class="chip"><input type="radio" id="l3" name="lang" value="Ukrainian"><span>UA</span></label>
-              </div></div>
-            <div class="f full"><label for="f-msg">Tell us about your project</label><textarea id="f-msg" name="message" placeholder="What does your business do, who are your customers, and what should the new website help you achieve?"></textarea></div>
-            <div class="f full"><label for="f-src">How did you hear about us?</label><select id="f-src" name="source"><option value="">Select an option</option><option>Google search</option><option>Instagram</option><option>Facebook</option><option>LinkedIn</option><option>Referral from a friend or client</option><option>Other</option></select></div>
+            <div class="f"><label for="f-date">Preferred date <span class="req">*</span></label><input id="f-date" name="date" type="date" data-gs="date" required><div class="msg">Please pick a date (Mon–Sat).</div></div>
+            <div class="f"><label for="f-time">Preferred time</label><select id="f-time" data-gs="seg" name="time"><option>Morning (9:00–12:00)</option><option>Afternoon (12:00–16:00)</option><option>Evening (16:00–19:00)</option></select></div>
+            <div class="f full"><label for="f-fmt">Call format</label><select id="f-fmt" data-gs="seg" name="format"><option>Phone call</option><option>Video call (Zoom / Meet)</option><option>In person (GTA)</option></select></div>
+            <div class="f full"><label for="f-msg">Tell us about your project <span class="opt">(optional)</span></label><textarea id="f-msg" name="message" placeholder="What does your business do, who are your customers, and what should the new website help you achieve?"></textarea></div>
+            <div class="f full"><label for="f-src">How did you hear about us? <span class="opt">(optional)</span></label><select id="f-src" data-gs="list" name="source"><option value="">Select an option</option><option>Google search</option><option>Instagram</option><option>Facebook</option><option>LinkedIn</option><option>Referral from a friend or client</option><option>Other</option></select></div>
           </div>
         </fieldset>
         <label class="consent" id="consentRow"><input type="checkbox" id="f-consent" required><span>I agree to be contacted by Your Digital Marketing Keys about my request. My information is handled according to the <a href="privacy.html" style="text-decoration:underline">Privacy Policy</a>. <span class="req">*</span></span></label>
@@ -184,15 +163,15 @@
 </main>
 
 <footer>
-  <div class="wrap">
+  <div class="wrap fpanel glass">
     <div class="fgrid">
       <div class="fbrand">
-        <a class="flogo" href="./" aria-label="Your Digital Marketing Keys – home"><img src="assets/img/logo.png" alt="Your Digital Marketing Keys" width="326" height="34"></a>
-        <p>Websites, online stores, CRM, social media, branding and analytics for small businesses across Toronto & the GTA. One team, a fixed price in writing, and 0% financing in 2–3 payments.</p>
+        <a class="flogo" href="./" aria-label="Your Digital Marketing Keys – home"><img src="assets/img/logo.svg" alt="Your Digital Marketing Keys" width="326" height="34"></a>
+        <p>Websites, CRM and marketing for small businesses in Toronto and the GTA. Fixed pricing, 0% financing.</p>
         <div class="soc">
-          <a href="https://www.instagram.com/yourdigitalmarketingkeys?stkn=MXE5bGRibDMwNWkzcg%3D%3D&utm_source=qr" target="_blank" rel="noopener" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a>
-          <a href="https://www.facebook.com/share/1CYwkNndCK/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook"><svg><use href="#i-fb"/></svg></a>
-          <a href="https://www.linkedin.com/company/yourdigitalmarketingkeys/about/?viewAsMember=true" target="_blank" rel="noopener" aria-label="LinkedIn"><svg><use href="#i-in"/></svg></a>
+          <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a>
+          <a href="https://facebook.com/" target="_blank" rel="noopener" aria-label="Facebook"><svg><use href="#i-fb"/></svg></a>
+          <a href="https://linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg><use href="#i-in"/></svg></a>
         </div>
       </div>
       <div>
@@ -236,6 +215,9 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script src="assets/js/main.js" defer></script>
+<script src="assets/js/ambient-light.js" defer></script>
 <script src="assets/js/contact.js" defer></script>
+<script src="assets/js/glass-select.js" defer></script>
+<script src="assets/js/glass-date.js" defer></script>
 </body>
 </html>

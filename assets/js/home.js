@@ -2,7 +2,8 @@
 (function(){
   /* ---------- Wave ---------- */
   var svg=document.getElementById('wvSvg');
-  if(svg){
+  /* сначала WebGL-волна (wave-gl.js); SVG + SMIL ниже — запасной вариант без WebGL */
+  if(svg && !(window.YDMKWaveGL && window.YDMKWaveGL.mount(svg))){
     var X0=-80,X1=1480,N=220,F=12,T=Math.PI*2;
     var W={
       main: {mid:208,th:150,a1:42,l1:1500,p1:0,  a2:16,l2:620,p2:1.3},
