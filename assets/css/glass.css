@@ -480,3 +480,86 @@ footer>.fpanel.glass{border-radius:32px;padding:52px 48px 0;width:calc(100% - 64
 .gs-cal,.gs-pop{background:linear-gradient(160deg,#ffffff,#FBFAF8 70%,#f7f3fa)}
 .gs-day.is-off{text-decoration:none;color:#b3aec8}
 .gs-day.is-off.is-today{box-shadow:inset 0 0 0 1.5px rgba(140,134,174,.45)}
+
+/* =====================================================================
+   13. Мобильная версия: исправления
+   ===================================================================== */
+/* контакты: колонки не растягиваются по длинному email */
+@media(max-width:960px){.cgrid{grid-template-columns:minmax(0,1fr)}}
+.cgrid>*{min-width:0}
+.cline>div{min-width:0}
+.cline a{overflow-wrap:anywhere}
+
+/* таблица планов на узких экранах — стеклянные карточки без прокрутки вбок
+   (стеклянная рамка внутри прокручиваемой таблицы уезжала вместе с содержимым) */
+@media(max-width:720px){
+  .tscroll,.tscroll.glass{overflow:visible;background:none;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;border-radius:0}
+  .tscroll.glass::before,.tscroll.glass::after{content:none}
+  table.plans,.plans tbody,.plans tr,.plans td{display:block;width:auto;min-width:0}
+  table.plans{background:none}
+  .plans tr:first-child{display:none}                       /* строка заголовков */
+  .plans tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;margin-bottom:12px;padding:16px 18px;border-radius:18px;
+    background:var(--glass-bg);border:1px solid rgba(255,255,255,.7);
+    box-shadow:inset 1px 1px 0 rgba(255,255,255,.95),inset -1px -1px 0 rgba(90,80,140,.08),var(--glass-shadow)}
+  .tscroll.glass .plans td,.plans td{padding:0;border:0;box-shadow:none;background:none!important;width:auto!important;white-space:normal}
+  .plans td:first-child{grid-column:1;grid-row:1;font-size:.98rem}
+  .tscroll.glass .plans td+td,.plans td+td{box-shadow:none}
+  .tscroll.glass .plans td:last-child,.plans td:last-child{grid-column:2;grid-row:1;text-align:right;white-space:nowrap;font-size:1.02rem;font-weight:700;
+    background:var(--g)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+  .plans td:nth-child(2){grid-column:1/-1;grid-row:2;color:#4a4760;font-size:.9rem}
+  .plans td:last-child::after{content:" CAD/mo";color:#6a6680;font-size:.72rem;font-weight:500}  /* заголовок столбца скрыт — уточняем, что цена в месяц */
+}
+
+/* =====================================================================
+   14. Блоки карточек на телефоне (mobile-cards.js): карусель (А) и стопка (Б)
+   На главной: Why — стопка, пакеты — карусель, месячные планы — стопка.
+   ===================================================================== */
+.mcards-src,.mdots,.mdeck-nav,.mdeck-hint{display:none}
+@media(max-width:720px){
+  /* таблица планов: на телефоне вместо неё карточки */
+  .tscroll.has-mob table.plans{display:none}
+  .tscroll.has-mob .mcards-src{display:block}
+  .pcard{border-radius:20px;padding:18px 18px 20px;background:var(--glass-bg)}
+  .pcard-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .pcard-name{font-size:1.02rem;font-weight:600;line-height:1.3}
+  .pcard-price{text-align:right;white-space:nowrap;line-height:1.1}
+  .pcard-price b{display:block;font-size:1.35rem;font-weight:700;background:var(--g);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .pcard-price span{font-size:.68rem;color:#5d5a72;font-weight:500;letter-spacing:.02em}
+  .pcard-desc{margin-top:12px;color:#4a4760;font-size:.92rem;line-height:1.55}
+
+  /* --- А. карусель --- */
+  .mcar{display:flex!important;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;
+    padding:20px 18px 34px;margin:-20px -18px -24px;scroll-padding-inline:18px}
+  .mcar::-webkit-scrollbar{display:none}
+  .mcar>*{flex:0 0 84%;min-width:0;scroll-snap-align:center}
+  .mcar:focus-visible{outline:2px solid #4fa9d1;outline-offset:-4px;border-radius:24px}
+  .mdots{display:flex;justify-content:center;gap:8px;margin-top:8px}
+  .mdot{width:8px;height:8px;padding:0;border:0;border-radius:8px;background:rgba(140,134,174,.45);cursor:pointer;transition:width .3s var(--spring),background .3s}
+  .mdot.on{width:24px;background:var(--g)}
+  .mdot:focus-visible{outline:2px solid #4fa9d1;outline-offset:3px}
+
+  /* --- Б. стопка --- */
+  .mdeck{overflow-x:clip;margin-inline:-18px;padding:16px 18px 6px}        /* смахнутая карточка не расширяет страницу */
+  .mdeck .mdeck-stage{display:block!important;position:relative;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+  .mdeck .mdeck-stage>*{position:absolute;left:0;right:0;top:0;margin:0;transform-origin:50% 100%;cursor:grab;
+    transition:transform .5s var(--spring),opacity .3s}
+  /* в стопке — без backdrop-filter: в Safari на iPhone размытие + transform/opacity на наложенных слоях
+     давало исчезающие карточки; плотная стеклянная заливка выглядит так же */
+  .mdeck .mdeck-stage>*{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+    background:linear-gradient(160deg,rgba(255,255,255,.94),rgba(251,250,248,.88))!important;will-change:transform;-webkit-transform:translateZ(0)}
+  .mdeck .mdeck-stage>*::before{display:none}
+  .mdeck .mdeck-stage>.is-top{box-shadow:inset 1px 1px 0 rgba(255,255,255,.95),inset -1px -1px 0 rgba(90,80,140,.08),var(--glass-shadow-hover)}
+  .mdeck .mdeck-stage>:not(.is-top)>*{visibility:hidden}   /* у нижних карточек видны только края */
+  .mdeck-nav{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:18px}
+  .mdeck-btn{width:42px;height:42px;border-radius:50%;border:1px solid var(--ctl-line,#8C86AE);position:relative;cursor:pointer;
+    background:linear-gradient(160deg,#fff,#FBFAF8);box-shadow:inset 0 1px 0 #fff,0 6px 14px -8px rgba(60,55,110,.35)}
+  .mdeck-btn::before{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;border:solid #3a3a48;border-width:0 1.8px 1.8px 0}
+  .mdeck-prev::before{transform:translate(-30%,-50%) rotate(135deg)}
+  .mdeck-next::before{transform:translate(-70%,-50%) rotate(-45deg)}
+  .mdeck-btn:focus-visible{outline:2px solid #4fa9d1;outline-offset:3px}
+  .mdeck-count{min-width:48px;text-align:center;font-weight:600;color:#3a3a48;font-variant-numeric:tabular-nums}
+  .mdeck-hint{display:block;text-align:center;margin-top:8px;font-size:.78rem;color:#5d5a72;transition:opacity .4s}
+  .mdeck-hint.done{opacity:0}
+  .mdeck .mdeck-stage>.nudge{animation:mnudge 1.2s var(--spring)}
+  @keyframes mnudge{0%{transform:none}30%{transform:translateX(-34px) rotate(-3.5deg)}55%{transform:translateX(12px) rotate(1deg)}100%{transform:none}}
+}
